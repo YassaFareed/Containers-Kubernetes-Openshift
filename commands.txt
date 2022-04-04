@@ -1,0 +1,55 @@
+docker --version
+
+ibmcloud version
+
+cd /home/project
+
+
+
+git clone https://github.com/ibm-developer-skills-network/CC201.git
+
+cd CC201/labs/1_ContainersAndDocker/
+
+
+---------- pulling an image and running your first contain---------
+docker images
+
+docker pull hello-world //pull first image from docker hub
+
+
+docker images
+
+docker run hello-world
+
+docker ps -a
+
+docker container rm <container_id>
+
+
+----------build image using docker file-----------
+
+docker build . -t myimage:v1
+
+docker images
+
+//You should also see a node image in the images output. This is because the docker build command pulled node:9.4.0-alpine to use it as the base image for the image you built.
+
+-----------Run the image as a container--------
+docker run -p 8080:8080 myimage:v1
+
+//to stop open another terminal
+curl localhost:8080 
+docker stop $(docker ps -q)
+exit
+
+
+-----------Push the image to IBM Cloud Container Registry----------
+
+ibmcloud target
+ibmcloud cr namespaces
+ibmcloud cr region-set us-south
+ibmcloud cr login
+export MY_NAMESPACE=sn-labs-$USERNAME
+docker tag myimage:v1 us.icr.io/$MY_NAMESPACE/hello-world:1
+docker push us.icr.io/$MY_NAMESPACE/hello-world:1
+ibmcloud cr images --restrict $MY_NAMESPACE
